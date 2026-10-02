@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lumina Agency — Studio de production visuelle produit</title>
+<meta name="description" content="Lumina Agency transforme vos photos smartphone en photographies studio HD et mini-clips 4K. Sans envoi de produit. Livraison 24-48 h, NDA sur demande. Dès 50 €." />
+<meta name="theme-color" content="#191713" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23191713'/%3E%3Cg stroke='%23FAF9F7' stroke-width='4' stroke-linecap='round' fill='none'%3E%3Cline x1='12' y1='42' x2='52' y2='42'/%3E%3Cpath d='M21 42a11 11 0 0 1 22 0'/%3E%3C/g%3E%3Ccircle cx='47' cy='21' r='4' fill='%23C89B6C'/%3E%3C/svg%3E" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+          display: ['Fraunces', 'Georgia', 'serif']
+        },
+        colors: {
+          ivory: '#FAF9F7',
+          ink: '#191713',
+          bronze: '#8C6D46',
+          bronzelt: '#C89B6C',
+          line: '#E7E2D9',
+          body: '#5B564C'
+        }
+      }
+    }
+  }
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  body { font-family: Inter, system-ui, sans-serif; background: #FAF9F7; color: #191713; }
+  ::selection { background: #191713; color: #FAF9F7; }
+
+  .overline { display: inline-flex; align-items: center; gap: .6rem; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; font-weight: 600; color: #8C6D46; }
+  .overline::before { content: ''; width: 1.6rem; height: 1px; background: currentColor; opacity: .6; }
+  .overline.light { color: #C89B6C; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 9999px; padding: .8rem 1.6rem; font-size: 13px; font-weight: 600; letter-spacing: .02em; transition: all .2s ease; cursor: pointer; }
+  .btn-primary { background: #191713; color: #FAF9F7; }
+  .btn-primary:hover { background: #000; }
+  .btn-ghost { border: 1px solid rgba(25,23,19,.25); color: #191713; }
+  .btn-ghost:hover { border-color: #191713; }
+
+  .reveal { opacity: 0; transform: translateY(12px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.is-visible { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
+
+  /* Comparateur */
+  .ba { position: relative; overflow: hidden; user-select: none; touch-action: pan-y; background: #EFECE6; }
+  .ba-media { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ba-after { clip-path: inset(0 0 0 var(--pos, 50%)); }
+  .ba-line { position: absolute; top: 0; bottom: 0; left: var(--pos, 50%); width: 1.5px; background: #FAF9F7; transform: translateX(-50%); pointer-events: none; }
+  .ba-knob { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 34px; height: 34px; border-radius: 9999px; background: #FAF9F7; color: #191713; display: grid; place-items: center; box-shadow: 0 1px 8px rgba(0,0,0,.25); pointer-events: none; }
+  .ba-tag { position: absolute; top: 10px; font-size: 9.5px; letter-spacing: .14em; font-weight: 600; text-transform: uppercase; padding: 3px 8px; pointer-events: none; }
+  .ba-tag.before { left: 10px; background: rgba(25,23,19,.78); color: #FAF9F7; }
+  .ba-tag.after { right: 10px; background: #FAF9F7; color: #191713; }
+
+  .raw-look { filter: saturate(.68) contrast(.84) brightness(1.12) sepia(.24) blur(.5px); transform: scale(1.08) rotate(-1.6deg); }
+  .raw-overlay { position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 90% at 68% 20%, rgba(255,244,214,.5), rgba(255,244,214,0) 45%),
+                radial-gradient(150% 130% at 50% 55%, rgba(0,0,0,0) 55%, rgba(22,15,5,.4) 100%); }
+
+  img[data-src] { opacity: 0; transition: opacity .5s ease; }
+  img.is-loaded { opacity: 1; }
+
+  @keyframes scanline { 0% { top: -6%; } 100% { top: 104%; } }
+  .scanline { animation: scanline 1.1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 1.6s linear infinite; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .toast { animation: toastIn .3s ease both; }
+
+  .acc-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .acc-item.open .acc-body { grid-template-rows: 1fr; }
+  .acc-body > div { overflow: hidden; }
+  .acc-item.open .acc-chev { transform: rotate(180deg); }
+  mark.hl { background: #EBD9BF; color: #191713; padding: 0 1px; }
+
+  .modal-backdrop { transition: opacity .25s ease; }
+  .modal-panel { transition: transform .3s ease, opacity .25s ease; }
+  .modal-closed .modal-panel { transform: translateY(14px); opacity: 0; }
+  .modal-closed .modal-backdrop { opacity: 0; }
+  body.no-scroll { overflow: hidden; }
+
+  .field-invalid { border-color: #B3261E !important; box-shadow: 0 0 0 3px rgba(179,38,30,.1) !important; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+</style>
+</head>
+
+<body class="antialiased">
+
+<!-- ============ HEADER ============ -->
+<header class="sticky top-0 z-50 border-b border-line bg-ivory/95 backdrop-blur-sm">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8">
+    <div class="flex h-16 items-center justify-between gap-6">
+      <a href="#top" class="flex items-center gap-3" aria-label="Lumina Agency — accueil">
+        <svg class="h-7 w-7 text-ink" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <line x1="7" y1="29" x2="37" y2="29" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M13.5 29a8.5 8.5 0 0 1 17 0" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <circle cx="33.5" cy="13.5" r="2.8" fill="#8C6D46"/>
+        </svg>
+        <span class="leading-none">
+          <span class="block font-display text-[19px] font-semibold tracking-tight">Lumina</span>
+          <span class="block text-[9px] font-semibold tracking-[0.34em] uppercase text-bronze">Agency</span>
+        </span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-7 text-[13px] font-medium text-body" aria-label="Navigation principale">
+        <a href="#demos" class="hover:text-ink transition">Démonstrations</a>
+        <a href="#tarifs" class="hover:text-ink transition">Tarifs</a>
+        <a href="#avis" class="hover:text-ink transition">Avis</a>
+        <a href="#faq" class="hover:text-ink transition">FAQ</a>
+        <a href="#nda" class="hover:text-ink transition">NDA</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button type="button" data-open-order data-pack="express" class="btn btn-primary hidden sm:inline-flex !py-2.5">
+          Offre de lancement — 50 €
+        </button>
+        <button type="button" id="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu"
+          class="md:hidden grid h-10 w-10 place-items-center rounded-full border border-line text-ink">
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="mobile-menu" class="hidden md:hidden border-t border-line bg-ivory">
+    <nav class="mx-auto max-w-6xl px-5 py-3 grid gap-1 text-sm font-medium text-body" aria-label="Navigation mobile">
+      <a href="#demos" class="mobile-link rounded-lg px-3 py-2.5 hover:bg-white">Démonstrations</a>
+      <a href="#tarifs" class="mobile-link rounded-lg px-3 py-2.5 hover:bg-white">Tarifs</a>
+      <a href="#avis" class="mobile-link rounded-lg px-3 py-2.5 hover:bg-white">Avis</a>
+      <a href="#faq" class="mobile-link rounded-lg px-3 py-2.5 hover:bg-white">FAQ</a>
+      <a href="#nda" class="mobile-link rounded-lg px-3 py-2.5 hover:bg-white">NDA</a>
+      <button type="button" data-open-order data-pack="express" class="mobile-link btn btn-primary mt-1 justify-center">Offre de lancement — 50 €</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+<span id="top" class="block h-0"></span>
+
+<!-- ============ HERO ============ -->
+<section class="mx-auto max-w-6xl px-5 sm:px-8 pt-16 sm:pt-24 pb-16 sm:pb-20">
+  <div class="grid items-center gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-6 reveal">
+      <p class="overline">Studio de production visuelle · Paris</p>
+      <h1 class="mt-5 font-display text-[2.6rem] leading-[1.06] sm:text-6xl font-medium tracking-tight">
+        La métamorphose <em class="italic text-bronze">visuelle</em> de vos produits.
+      </h1>
+      <p class="mt-5 max-w-lg text-[15px] sm:text-base leading-relaxed text-body">
+        Vos photos smartphone deviennent des photographies studio HD et des mini-clips 4K.
+        Aucun envoi de produit. Livraison en 24-48 h, retouche comprise.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <button type="button" data-open-order data-pack="express" class="btn btn-primary">Créer ma première démo</button>
+        <a href="#demos" class="btn btn-ghost">Voir les avant / après</a>
+      </div>
+
+      <div class="mt-8">
+        <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-body/70 mb-2">Canal de livraison préféré</p>
+        <div id="channel-selector" role="radiogroup" aria-label="Canal de livraison préféré" class="inline-flex rounded-full border border-line bg-white p-1 gap-1">
+          <button type="button" role="radio" aria-checked="true" data-channel="instagram"
+            class="channel-btn rounded-full px-3.5 py-1.5 text-xs font-semibold bg-ink text-ivory transition">Instagram DM</button>
+          <button type="button" role="radio" aria-checked="false" data-channel="tiktok"
+            class="channel-btn rounded-full px-3.5 py-1.5 text-xs font-semibold text-body hover:text-ink transition">TikTok DM</button>
+          <button type="button" role="radio" aria-checked="false" data-channel="email"
+            class="channel-btn rounded-full px-3.5 py-1.5 text-xs font-semibold text-body hover:text-ink transition">E-mail / Drive</button>
+        </div>
+      </div>
+
+      <p class="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-5 text-xs text-body">
+        <span class="inline-flex items-center gap-2"><i data-lucide="shield-check" class="h-3.5 w-3.5 text-bronze"></i> NDA sur demande</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="clock" class="h-3.5 w-3.5 text-bronze"></i> Livraison 24-48 h</span>
+        <span class="inline-flex items-center gap-2"><i data-lucide="rotate-ccw" class="h-3.5 w-3.5 text-bronze"></i> 1 retouche offerte</span>
+      </p>
+    </div>
+
+    <figure class="lg:col-span-6 reveal" data-delay="1">
+      <div class="border border-line bg-white p-2.5">
+        <div id="hero-ba" class="ba aspect-[4/3]" style="--pos:50%"
+          aria-label="Comparaison : photo d'origine à gauche, tirage studio à droite"></div>
+      </div>
+      <figcaption class="mt-3 flex items-baseline justify-between gap-4 text-xs text-body/80">
+        <span class="font-display italic text-[13px]">Sneaker cuir — prise de vue client</span>
+        <span class="uppercase tracking-[0.14em] text-[10px]">→ Tirage studio Lumina</span>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============ GALERIE ============ -->
+<section id="demos" class="border-y border-line bg-white">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+    <div class="flex flex-wrap items-end justify-between gap-5 reveal">
+      <div>
+        <p class="overline">01 — Démonstrations</p>
+        <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">Avant / après, par univers</h2>
+      </div>
+      <p class="text-xs uppercase tracking-[0.16em] text-body/70" id="gallery-count" aria-live="polite">6 démonstrations</p>
+    </div>
+
+    <div id="gallery-filters" class="mt-8 flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-5 px-5 sm:mx-0 sm:px-0" role="tablist" aria-label="Filtrer par univers"></div>
+
+    <div id="gallery-grid" class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+    <p id="gallery-empty" class="hidden mt-8 text-center text-sm text-body">Aucune démonstration dans cet univers.</p>
+  </div>
+</section>
+
+<!-- ============ MÉTHODE ============ -->
+<section class="mx-auto max-w-6xl px-5 sm:px-8 py-14 sm:py-16">
+  <ol class="grid gap-10 sm:grid-cols-3 reveal">
+    <li>
+      <p class="font-display text-4xl font-medium text-line select-none" aria-hidden="true">1</p>
+      <h3 class="mt-3 text-sm font-semibold">Vous envoyez vos photos</h3>
+      <p class="mt-2 text-sm leading-relaxed text-body">De simples prises de vue smartphone suffisent. Aucun colis, aucune logistique.</p>
+    </li>
+    <li>
+      <p class="font-display text-4xl font-medium text-line select-none" aria-hidden="true">2</p>
+      <h3 class="mt-3 text-sm font-semibold">Nous produisons au studio numérique</h3>
+      <p class="mt-2 text-sm leading-relaxed text-body">Lumière, matières, décors, détourages et clips 4K — validés avec vous avant livraison.</p>
+    </li>
+    <li>
+      <p class="font-display text-4xl font-medium text-line select-none" aria-hidden="true">3</p>
+      <h3 class="mt-3 text-sm font-semibold">Vous recevez sous 24-48 h</h3>
+      <p class="mt-2 text-sm leading-relaxed text-body">Sur Instagram, TikTok ou Drive privé, retouche offerte incluse.</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ DÉPÔT ============ -->
+<section id="depot" class="border-y border-line bg-white">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+    <div class="grid gap-10 lg:grid-cols-12 items-center">
+      <div class="lg:col-span-5 reveal">
+        <p class="overline">02 — Essai immédiat</p>
+        <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">Testez avec votre propre photo</h2>
+        <p class="mt-4 text-[15px] leading-relaxed text-body">
+          Déposez un visuel : la pré-analyse simule l'étalonnage studio dans votre navigateur.
+          Aucun fichier ne quitte votre appareil à cette étape.
+        </p>
+      </div>
+
+      <div class="lg:col-span-7 reveal" data-delay="1">
+        <div id="dropzone" tabindex="0" role="button"
+          aria-label="Zone de dépôt : glissez une photo de produit ou cliquez pour parcourir"
+          class="relative overflow-hidden border border-dashed border-ink/30 bg-ivory p-8 sm:p-10 text-center transition hover:border-ink focus-within:border-ink">
+
+          <div id="dz-idle">
+            <i data-lucide="image-plus" class="mx-auto h-8 w-8 text-bronze"></i>
+            <p class="mt-4 text-sm font-semibold">Glissez-déposez votre photo produit</p>
+            <button type="button" id="dz-browse" class="btn btn-ghost mt-4 !py-2.5">Parcourir mes fichiers</button>
+            <p class="mt-4 text-[11px] uppercase tracking-[0.14em] text-body/60">JPG · PNG · HEIC — 25 Mo max — analyse locale</p>
+          </div>
+
+          <input type="file" id="dz-input" accept="image/*" class="hidden" />
+
+          <div id="dz-scan" class="absolute inset-0 hidden flex-col items-center justify-center gap-4 bg-ivory/95">
+            <div class="relative w-44 overflow-hidden border border-line bg-white">
+              <img id="dz-scan-img" alt="Photo en cours d'analyse" class="h-32 w-full object-contain" />
+              <div class="scanline absolute inset-x-0 h-[2px] bg-bronze"></div>
+            </div>
+            <p class="flex items-center gap-2 text-sm font-medium text-body">
+              <i data-lucide="loader-2" class="h-4 w-4 spin text-bronze"></i><span id="dz-scan-text">Analyse de la lumière...</span>
+            </p>
+            <div class="h-px w-40 bg-line"><div id="dz-scan-bar" class="h-px w-0 bg-ink transition-all duration-500"></div></div>
+          </div>
+
+          <div id="dz-result" class="absolute inset-0 hidden overflow-y-auto bg-ivory p-5 text-left">
+            <div class="flex items-center justify-between gap-3">
+              <p class="text-sm font-semibold">Prévisualisation de l'étalonnage</p>
+              <button type="button" id="dz-reset" class="inline-flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-xs font-semibold hover:border-ink transition">
+                <i data-lucide="rotate-ccw" class="h-3.5 w-3.5"></i> Autre photo
+              </button>
+            </div>
+            <div id="dz-ba" class="ba mt-3 aspect-[16/9]" style="--pos:50%"></div>
+            <p class="mt-3 text-xs text-body">Simulation automatique (contraste, saturation, lumière). Le rendu final est repris à la main par l'équipe.</p>
+            <button type="button" data-open-order data-pack="express" class="btn btn-primary mt-4 w-full">Commander le rendu final</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TARIFS ============ -->
+<section id="tarifs" class="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+  <div class="reveal">
+    <p class="overline">03 — Tarifs</p>
+    <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">Deux packs, prix nets</h2>
+  </div>
+
+  <div class="mt-10 grid gap-6 lg:grid-cols-3 reveal">
+    <article class="relative border border-ink bg-white p-7 flex flex-col">
+      <p class="absolute -top-3 left-7 bg-ink text-ivory text-[10px] font-semibold uppercase tracking-[0.18em] px-2.5 py-1">Offre de lancement</p>
+      <h3 class="font-display text-xl font-medium">Pack Express</h3>
+      <p class="mt-4 flex items-baseline gap-2.5">
+        <span class="font-display text-4xl font-medium">50 €</span>
+        <span class="text-sm text-body/60 line-through">120 €</span>
+      </p>
+      <ul class="mt-6 grid gap-2.5 text-sm text-body">
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> 10 photos studio HD</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> 2 mini-clips 4K</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> Livraison 24-48 h</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> 1 retouche sous 24 h</li>
+      </ul>
+      <label class="mt-6 flex items-center gap-2.5 text-sm font-medium">
+        <input type="radio" name="pack" value="express" checked class="pack-radio h-4 w-4 border-ink/40 text-ink focus:ring-bronze" />
+        Sélectionner ce pack
+      </label>
+      <button type="button" data-open-order data-pack="express" class="btn btn-primary mt-5 w-full">Commander</button>
+    </article>
+
+    <article class="border border-line bg-white p-7 flex flex-col">
+      <h3 class="font-display text-xl font-medium">Pack Premium</h3>
+      <p class="mt-4 flex items-baseline gap-2.5">
+        <span class="font-display text-4xl font-medium">120 €</span>
+        <span class="text-sm text-body/60 line-through">240 €</span>
+      </p>
+      <ul class="mt-6 grid gap-2.5 text-sm text-body">
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> 25 photos studio HD</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> 5 mini-clips 4K</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> Droits commerciaux cédés</li>
+        <li class="flex gap-2.5"><span class="text-bronze">—</span> Priorité studio + 2 retouches</li>
+      </ul>
+      <label class="mt-6 flex items-center gap-2.5 text-sm font-medium">
+        <input type="radio" name="pack" value="premium" class="pack-radio h-4 w-4 border-ink/40 text-ink focus:ring-bronze" />
+        Sélectionner ce pack
+      </label>
+      <button type="button" data-open-order data-pack="premium" class="btn btn-ghost mt-5 w-full">Commander</button>
+    </article>
+
+    <aside class="border border-line bg-ivory p-7">
+      <h3 class="font-display text-xl font-medium">Calculateur d'options</h3>
+      <p class="mt-1.5 text-sm text-body">Le total se met à jour en direct.</p>
+      <div class="mt-5 grid gap-3">
+        <label class="flex items-start gap-2.5 text-sm">
+          <input type="checkbox" data-opt="prio" data-price="20" class="opt-input mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" />
+          <span class="flex-1 flex justify-between gap-2"><span>Traitement prioritaire 24 h</span><span class="text-body/70">+20 €</span></span>
+        </label>
+        <label class="flex items-start gap-2.5 text-sm">
+          <input type="checkbox" data-opt="photos" data-price="30" class="opt-input mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" />
+          <span class="flex-1 flex justify-between gap-2"><span>5 photos HD supplémentaires</span><span class="text-body/70">+30 €</span></span>
+        </label>
+        <label class="flex items-start gap-2.5 text-sm">
+          <input type="checkbox" data-opt="sources" data-price="15" class="opt-input mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" />
+          <span class="flex-1 flex justify-between gap-2"><span>Sources HD &amp; PNG transparent</span><span class="text-body/70">+15 €</span></span>
+        </label>
+      </div>
+      <dl class="mt-6 border-t border-line pt-4 text-sm space-y-1.5">
+        <div class="flex justify-between text-body"><dt id="calc-pack-label">Pack Express</dt><dd id="calc-pack-price">50 €</dd></div>
+        <div class="flex justify-between text-body"><dt>Options</dt><dd id="calc-options-price">0 €</dd></div>
+        <div class="flex justify-between text-body"><dt>Économie</dt><dd id="calc-savings" class="text-bronze font-medium">-70 €</dd></div>
+      </dl>
+      <p class="mt-4 flex items-baseline justify-between border-t border-line pt-4">
+        <span class="text-sm font-semibold">Total</span>
+        <span class="flex items-baseline gap-2"><span id="calc-total" class="font-display text-3xl font-medium">50 €</span><span id="calc-total-orig" class="text-sm text-body/50 line-through">120 €</span></span>
+      </p>
+      <button type="button" id="calc-cta" data-open-order data-pack="express" class="btn btn-primary mt-5 w-full">
+        Commander — <span id="calc-cta-price">50 €</span>
+      </button>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ AVIS ============ -->
+<section id="avis" class="border-y border-line bg-white">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+    <div class="flex flex-wrap items-end justify-between gap-5 reveal">
+      <div>
+        <p class="overline">04 — Avis clients</p>
+        <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">Ils vendent mieux, tout simplement</h2>
+      </div>
+      <p class="text-xs uppercase tracking-[0.16em] text-body/70">4,9 / 5 · 128 marques accompagnées</p>
+    </div>
+
+    <div id="testimonial-grid" class="mt-10 grid gap-6 md:grid-cols-3 reveal"></div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="mx-auto max-w-3xl px-5 sm:px-8 py-16 sm:py-20">
+  <div class="reveal">
+    <p class="overline">05 — FAQ</p>
+    <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">Questions fréquentes</h2>
+  </div>
+
+  <div class="relative mt-8 reveal">
+    <i data-lucide="search" class="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-body/50"></i>
+    <input type="search" id="faq-search" placeholder="Rechercher (délais, droits, NDA...)"
+      aria-label="Rechercher dans la FAQ"
+      class="w-full rounded-full border border-line bg-white py-3 pl-11 pr-11 text-sm outline-none focus:border-ink transition" />
+    <button type="button" id="faq-clear" aria-label="Effacer la recherche"
+      class="absolute right-3 top-1/2 hidden -translate-y-1/2 rounded-full p-1.5 text-body/60 hover:text-ink hover:bg-ivory transition">
+      <i data-lucide="x" class="h-4 w-4"></i>
+    </button>
+  </div>
+  <p id="faq-meta" class="mt-2.5 text-xs text-body/70" aria-live="polite">6 questions</p>
+
+  <div id="faq-list" class="mt-4 divide-y divide-line border-y border-line"></div>
+  <div id="faq-empty" class="hidden mt-6 border border-dashed border-ink/30 p-6 text-center text-sm text-body">
+    Aucune réponse ne correspond. Écrivez-nous :
+    <a href="mailto:lumina.product@gmail.com" class="font-semibold underline">lumina.product@gmail.com</a>
+  </div>
+</section>
+
+<!-- ============ NDA ============ -->
+<section id="nda" class="bg-ink text-ivory">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8 py-16 sm:py-20">
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-center reveal">
+      <div class="lg:col-span-5">
+        <p class="overline light">06 — Confidentialité</p>
+        <h2 class="mt-3 font-display text-3xl sm:text-4xl font-medium tracking-tight">NDA strict, suppression sous 30 jours</h2>
+        <p class="mt-4 text-sm leading-relaxed text-ivory/70">
+          Produits non commercialisés, collections sous embargo : accord de non-divulgation signé avant tout
+          échange de fichiers, stockage chiffré, aucune publication sans accord écrit.
+        </p>
+      </div>
+      <ul class="lg:col-span-4 grid gap-3.5 text-sm text-ivory/80">
+        <li class="flex gap-3"><i data-lucide="file-signature" class="h-4 w-4 mt-0.5 shrink-0 text-bronzelt"></i> NDA bilatéral avant le premier dépôt de fichier</li>
+        <li class="flex gap-3"><i data-lucide="timer" class="h-4 w-4 mt-0.5 shrink-0 text-bronzelt"></i> Purge automatique de vos fichiers sous 30 jours</li>
+        <li class="flex gap-3"><i data-lucide="eye-off" class="h-4 w-4 mt-0.5 shrink-0 text-bronzelt"></i> Accès limité à l'équipe projet, hébergement UE</li>
+      </ul>
+      <div class="lg:col-span-3 lg:justify-self-end">
+        <a href="mailto:lumina.product@gmail.com?subject=Demande%20de%20NDA%20-%20Lumina%20Agency"
+          class="btn bg-ivory text-ink hover:bg-white">
+          <i data-lucide="send" class="h-4 w-4"></i> Recevoir le NDA
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ivory">
+  <div class="mx-auto max-w-6xl px-5 sm:px-8 py-12">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+      <a href="#top" class="flex items-center gap-3">
+        <svg class="h-8 w-8 text-ink" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+          <line x1="7" y1="29" x2="37" y2="29" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <path d="M13.5 29a8.5 8.5 0 0 1 17 0" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+          <circle cx="33.5" cy="13.5" r="2.8" fill="#8C6D46"/>
+        </svg>
+        <span class="leading-none">
+          <span class="block font-display text-[21px] font-semibold tracking-tight">Lumina</span>
+          <span class="block text-[9px] font-semibold tracking-[0.34em] uppercase text-bronze">Agency</span>
+        </span>
+      </a>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-body">
+        <a href="https://www.instagram.com/lumina.product_studio" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 hover:text-ink transition"><i data-lucide="instagram" class="h-4 w-4"></i> @lumina.product_studio</a>
+        <a href="https://www.tiktok.com/@lumina.product_st" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 hover:text-ink transition"><i data-lucide="music-2" class="h-4 w-4"></i> @lumina.product_st</a>
+        <a href="mailto:lumina.product@gmail.com" class="inline-flex items-center gap-1.5 hover:text-ink transition"><i data-lucide="mail" class="h-4 w-4"></i> lumina.product@gmail.com</a>
+      </div>
+    </div>
+    <div class="mt-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-t border-line pt-6 text-xs text-body/70">
+      <p>© <span id="year">2026</span> Lumina Agency — Studio de création visuelle produit. Tous droits réservés.</p>
+      <p class="flex flex-wrap gap-x-5 gap-y-1">
+        <a href="mentions-legales.html" class="hover:text-ink transition">Mentions légales</a>
+        <a href="cgv.html" class="hover:text-ink transition">CGV</a>
+        <a href="confidentialite.html" class="hover:text-ink transition">Politique de confidentialité</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODALE ============ -->
+<div id="order-modal" class="modal-closed fixed inset-0 z-[80] hidden" role="dialog" aria-modal="true" aria-labelledby="order-title">
+  <div id="modal-backdrop" class="modal-backdrop absolute inset-0 bg-ink/60"></div>
+  <div class="absolute inset-0 overflow-y-auto p-4">
+    <div class="modal-panel mx-auto my-6 w-full max-w-xl border border-line bg-ivory shadow-2xl">
+
+      <div class="flex items-start justify-between gap-4 border-b border-line px-7 py-5">
+        <div>
+          <p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-bronze">Commande en 3 étapes</p>
+          <h3 id="order-title" class="mt-1 font-display text-xl font-medium">Créer ma métamorphose produit</h3>
+        </div>
+        <button type="button" id="modal-close" aria-label="Fermer" class="grid h-9 w-9 place-items-center rounded-full border border-line text-body hover:text-ink hover:border-ink transition">
+          <i data-lucide="x" class="h-4 w-4"></i>
+        </button>
+      </div>
+
+      <div id="modal-steps-bar" class="px-7 pt-5">
+        <div class="flex items-center gap-2 text-xs font-semibold">
+          <span class="step-dot grid h-6 w-6 place-items-center rounded-full border border-ink/30 text-body" data-step="1">1</span>
+          <span class="text-body">Projet</span>
+          <span class="step-line h-px flex-1 bg-line" data-line="1"></span>
+          <span class="step-dot grid h-6 w-6 place-items-center rounded-full border border-ink/30 text-body" data-step="2">2</span>
+          <span class="text-body">Options</span>
+          <span class="step-line h-px flex-1 bg-line" data-line="2"></span>
+          <span class="step-dot grid h-6 w-6 place-items-center rounded-full border border-ink/30 text-body" data-step="3">3</span>
+          <span class="text-body">Livraison</span>
+        </div>
+        <div class="mt-3 h-px w-full bg-line"><div id="modal-progress" class="h-px bg-ink transition-all duration-500" style="width:33.33%"></div></div>
+      </div>
+
+      <form id="order-form" novalidate class="px-7 py-6">
+        <section class="modal-step" data-panel="1">
+          <div class="grid gap-4">
+            <div>
+              <label for="f-brand" class="text-sm font-medium">Nom de la marque <span class="text-red-700">*</span></label>
+              <input id="f-brand" type="text" required placeholder="Ex. Maison Verveine"
+                class="mt-1.5 w-full rounded-md border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-ink transition" />
+              <p class="err mt-1.5 hidden text-xs text-red-700"></p>
+            </div>
+            <div>
+              <label for="f-sector" class="text-sm font-medium">Secteur d'activité <span class="text-red-700">*</span></label>
+              <select id="f-sector" required class="mt-1.5 w-full rounded-md border border-line bg-white px-3.5 py-2.5 text-sm outline-none focus:border-ink">
+                <option value="">Sélectionner...</option>
+                <option>Mode &amp; Chaussures</option>
+                <option>Beauté &amp; Soins</option>
+                <option>Haute technologie</option>
+                <option>Épicerie &amp; Boissons</option>
+                <option>Bijoux &amp; Montres</option>
+                <option>Maison &amp; Déco</option>
+                <option>Autre</option>
+              </select>
+              <p class="err mt-1.5 hidden text-xs text-red-700"></p>
+            </div>
+            <div>
+              <label for="f-brief" class="text-sm font-medium">Votre produit <span class="text-body/60 font-normal">(optionnel)</span></label>
+              <textarea id="f-brief" rows="2" placeholder="Ex. 3 flacons, fond beige, 1 clip rotation."
+                class="mt-1.5 w-full rounded-md border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-ink transition"></textarea>
+            </div>
+            <div>
+              <p class="text-sm font-medium">Pack choisi</p>
+              <div class="mt-2 grid grid-cols-2 gap-2">
+                <label class="flex cursor-pointer items-center gap-2 rounded-md border border-line bg-white p-3 text-sm font-medium transition has-[:checked]:border-ink">
+                  <input type="radio" name="modal-pack" value="express" checked class="h-4 w-4 border-ink/40 text-ink focus:ring-bronze" />
+                  Express · 50 €
+                </label>
+                <label class="flex cursor-pointer items-center gap-2 rounded-md border border-line bg-white p-3 text-sm font-medium transition has-[:checked]:border-ink">
+                  <input type="radio" name="modal-pack" value="premium" class="h-4 w-4 border-ink/40 text-ink focus:ring-bronze" />
+                  Premium · 120 €
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="modal-step hidden" data-panel="2">
+          <div class="grid gap-2.5">
+            <label class="flex items-start gap-2.5 border border-line bg-white p-4 text-sm transition has-[:checked]:border-ink">
+              <input type="checkbox" class="modal-opt mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" data-opt="prio" data-price="20" />
+              <span class="flex-1 flex justify-between gap-2"><span>Traitement prioritaire 24 h</span><span class="text-body/70">+20 €</span></span>
+            </label>
+            <label class="flex items-start gap-2.5 border border-line bg-white p-4 text-sm transition has-[:checked]:border-ink">
+              <input type="checkbox" class="modal-opt mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" data-opt="photos" data-price="30" />
+              <span class="flex-1 flex justify-between gap-2"><span>5 photos HD supplémentaires</span><span class="text-body/70">+30 €</span></span>
+            </label>
+            <label class="flex items-start gap-2.5 border border-line bg-white p-4 text-sm transition has-[:checked]:border-ink">
+              <input type="checkbox" class="modal-opt mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" data-opt="sources" data-price="15" />
+              <span class="flex-1 flex justify-between gap-2"><span>Sources HD &amp; PNG transparent</span><span class="text-body/70">+15 €</span></span>
+            </label>
+            <label class="flex items-start gap-2.5 border border-line bg-white p-4 text-sm transition has-[:checked]:border-ink">
+              <input type="checkbox" id="opt-nda" class="mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" />
+              <span class="flex-1 flex justify-between gap-2"><span>Signer un NDA</span><span class="text-body/70">Inclus</span></span>
+            </label>
+          </div>
+          <div class="mt-4 border border-line bg-white p-4 text-sm">
+            <div class="flex justify-between text-body"><span id="m-pack">Pack Express — 50 €</span></div>
+            <div class="mt-1 flex justify-between text-body"><span>Options</span><span id="m-opts">0 €</span></div>
+            <div class="mt-2 flex justify-between border-t border-line pt-2 font-semibold"><span>Total</span><span id="m-total">50 €</span></div>
+          </div>
+        </section>
+
+        <section class="modal-step hidden" data-panel="3">
+          <div class="grid gap-4">
+            <div>
+              <p class="text-sm font-medium">Canal de livraison <span class="text-red-700">*</span></p>
+              <div class="mt-2 grid grid-cols-3 gap-2">
+                <label class="cursor-pointer rounded-md border border-line bg-white p-2.5 text-center text-xs font-semibold transition has-[:checked]:border-ink">
+                  <input type="radio" name="channel" value="instagram" checked class="sr-only" />Instagram
+                </label>
+                <label class="cursor-pointer rounded-md border border-line bg-white p-2.5 text-center text-xs font-semibold transition has-[:checked]:border-ink">
+                  <input type="radio" name="channel" value="tiktok" class="sr-only" />TikTok
+                </label>
+                <label class="cursor-pointer rounded-md border border-line bg-white p-2.5 text-center text-xs font-semibold transition has-[:checked]:border-ink">
+                  <input type="radio" name="channel" value="email" class="sr-only" />E-mail
+                </label>
+              </div>
+            </div>
+            <div>
+              <label for="f-email" class="text-sm font-medium">E-mail professionnel <span class="text-red-700">*</span></label>
+              <input id="f-email" type="email" required placeholder="contact@mamarque.com"
+                class="mt-1.5 w-full rounded-md border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-ink transition" />
+              <p class="err mt-1.5 hidden text-xs text-red-700"></p>
+            </div>
+            <div>
+              <label for="f-handle" class="text-sm font-medium"><span id="handle-label">Handle Instagram</span> <span class="text-body/60 font-normal">(optionnel)</span></label>
+              <input id="f-handle" type="text" placeholder="@mamarque"
+                class="mt-1.5 w-full rounded-md border border-line bg-white px-4 py-2.5 text-sm outline-none focus:border-ink transition" />
+            </div>
+            <div class="border border-line bg-white p-4 text-sm">
+              <div class="flex justify-between gap-3 text-body"><span>Marque</span><span id="r-brand" class="font-medium text-ink text-right">—</span></div>
+              <div class="mt-1 flex justify-between gap-3 text-body"><span>Secteur</span><span id="r-sector" class="font-medium text-ink text-right">—</span></div>
+              <div class="mt-1 flex justify-between gap-3 text-body"><span>Pack &amp; options</span><span id="r-pack" class="font-medium text-ink text-right">—</span></div>
+              <div class="mt-2 flex justify-between gap-3 border-t border-line pt-2 font-semibold"><span>Total</span><span id="r-total">50 €</span></div>
+            </div>
+            <label class="flex items-start gap-2.5 text-xs text-body">
+              <input id="f-consent" type="checkbox" class="mt-0.5 h-4 w-4 rounded border-ink/40 text-ink focus:ring-bronze" />
+              <span>J'accepte d'être recontacté(e) par Lumina Agency (CGV et politique de confidentialité).</span>
+            </label>
+            <p id="consent-err" class="hidden text-xs text-red-700">Merci d'accepter les conditions pour continuer.</p>
+          </div>
+        </section>
+
+        <section class="modal-step hidden text-center" data-panel="done">
+          <i data-lucide="check-circle-2" class="mx-auto h-10 w-10 text-bronze"></i>
+          <h4 class="mt-4 font-display text-2xl font-medium">Demande enregistrée</h4>
+          <p class="mt-2 text-sm text-body">Envoyez-nous le récapitulatif ci-dessous : réponse sous 2 h ouvrées avec le lien de dépôt sécurisé.</p>
+          <p class="mt-3 inline-flex items-center gap-1.5 border border-line bg-white px-3 py-1.5 text-sm font-semibold">Réf. <span id="done-ref">LUM-0000</span></p>
+          <pre id="done-summary" class="mt-4 whitespace-pre-wrap border border-line bg-white p-4 text-left text-xs text-body"></pre>
+          <div class="mt-4 grid gap-2 sm:grid-cols-2">
+            <a id="done-mailto" href="#" class="btn btn-primary"><i data-lucide="send" class="h-4 w-4"></i> Envoyer par e-mail</a>
+            <button type="button" data-close-modal class="btn btn-ghost">Fermer</button>
+          </div>
+        </section>
+
+        <div id="modal-nav" class="mt-6 flex items-center justify-between border-t border-line pt-5">
+          <button type="button" id="btn-back" class="btn btn-ghost !px-4 !py-2 disabled:opacity-40" disabled>
+            <i data-lucide="arrow-left" class="h-4 w-4"></i> Retour
+          </button>
+          <span id="modal-step-label" class="text-xs text-body/70">Étape 1 sur 3</span>
+          <button type="button" id="btn-next" class="btn btn-primary !px-5 !py-2">
+            Continuer <i data-lucide="arrow-right" class="h-4 w-4"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" class="fixed bottom-4 right-4 z-[90] flex w-[min(92vw,20rem)] flex-col gap-2" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var euro = function (n) { return n + '\u00A0\u20AC'; };
+  var icons = function () { if (window.lucide && window.lucide.createIcons) window.lucide.createIcons(); };
+
+  var CATEGORIES = [
+    { id: 'tous',   label: 'Tous' },
+    { id: 'mode',   label: 'Mode & Chaussures' },
+    { id: 'beaute', label: 'Beauté & Soins' },
+    { id: 'tech',   label: 'Haute technologie' },
+    { id: 'food',   label: 'Épicerie & Boissons' },
+    { id: 'bijoux', label: 'Bijoux & Montres' },
+    { id: 'maison', label: 'Maison & Déco' }
+  ];
+  var ITEMS = [
+    { cat: 'mode',   title: 'Sneaker cuir blanc',   before: 'images/before-sneaker.jpg',   after: 'images/after-sneaker.jpg' },
+    { cat: 'beaute', title: 'Sérum ambré',          before: 'images/before-serum.jpg',     after: 'images/after-serum.jpg' },
+    { cat: 'tech',   title: 'Casque cuir & acier',  before: 'images/before-headphones.jpg',after: 'images/after-headphones.jpg' },
+    { cat: 'food',   title: 'Cuvée rouge',          before: 'images/before-wine.jpg',      after: 'images/after-wine.jpg' },
+    { cat: 'bijoux', title: 'Montre boîtier rosé',  before: 'images/before-watch.jpg',     after: 'images/after-watch.jpg' },
+    { cat: 'maison', title: 'Bougie ambre',         before: 'images/before-candle.jpg',    after: 'images/after-candle.jpg' }
+  ];
+
+  /* Toasts */
+  var toastsEl = $('#toasts');
+  function toast(title, desc, type) {
+    var wrap = document.createElement('div');
+    wrap.className = 'toast flex items-start gap-2.5 border border-line bg-white p-3.5 shadow-lg';
+    var ic = document.createElement('i');
+    ic.setAttribute('data-lucide', type === 'error' ? 'alert-circle' : (type === 'warn' ? 'alert-triangle' : 'check-circle-2'));
+    ic.className = 'h-4 w-4 shrink-0 mt-0.5 ' + (type === 'error' ? 'text-red-700' : type === 'warn' ? 'text-amber-700' : 'text-bronze');
+    var box = document.createElement('div');
+    var t = document.createElement('p'); t.className = 'text-sm font-semibold'; t.textContent = title;
+    box.appendChild(t);
+    if (desc) { var d = document.createElement('p'); d.className = 'mt-0.5 text-xs text-body'; d.textContent = desc; box.appendChild(d); }
+    wrap.appendChild(ic); wrap.appendChild(box);
+    toastsEl.appendChild(wrap); icons();
+    setTimeout(function () {
+      wrap.style.transition = 'opacity .25s'; wrap.style.opacity = '0';
+      setTimeout(function () { wrap.remove(); }, 260);
+    }, 4200);
+  }
+
+  /* Comparateur */
+  function buildBA(host, beforeSrc, afterSrc, opts) {
+    opts = opts || {};
+    host.innerHTML = '';
+    host.style.setProperty('--pos', '50%');
+    var b = new Image();
+    b.className = 'ba-media ba-before' + (opts.rawBefore ? ' raw-look' : '');
+    b.alt = 'Avant — photo d\u2019origine'; b.draggable = false;
+    if (opts.lazy) b.dataset.src = beforeSrc; else b.src = beforeSrc;
+    var overlay = null;
+    if (opts.rawBefore) { overlay = document.createElement('div'); overlay.className = 'raw-overlay'; }
+    var a = new Image();
+    a.className = 'ba-media ba-after'; a.alt = 'Après — tirage studio Lumina'; a.draggable = false;
+    if (opts.lazy) a.dataset.src = afterSrc; else a.src = afterSrc;
+    var line = document.createElement('div'); line.className = 'ba-line';
+    var knob = document.createElement('div'); knob.className = 'ba-knob';
+    var ksvg = document.createElement('i'); ksvg.setAttribute('data-lucide', 'move-horizontal'); ksvg.className = 'h-4 w-4';
+    knob.appendChild(ksvg);
+    var tb = document.createElement('span'); tb.className = 'ba-tag before'; tb.textContent = 'Avant';
+    var ta = document.createElement('span'); ta.className = 'ba-tag after'; ta.textContent = 'Après';
+    var input = document.createElement('input');
+    input.type = 'range'; input.min = 0; input.max = 100; input.value = 50;
+    input.setAttribute('aria-label', 'Curseur de comparaison avant / après');
+    input.className = 'absolute inset-0 h-full w-full cursor-ew-resize opacity-0';
+    host.appendChild(b); if (overlay) host.appendChild(overlay);
+    host.appendChild(a); host.appendChild(line); host.appendChild(knob);
+    host.appendChild(tb); host.appendChild(ta); host.appendChild(input);
+    icons();
+    function set(v) { var p = Math.max(0, Math.min(100, v)); host.style.setProperty('--pos', p + '%'); input.value = p; }
+    input.addEventListener('input', function () { set(parseFloat(input.value)); });
+    host.addEventListener('pointerdown', function (e) {
+      var r = host.getBoundingClientRect(); if (r.width) set(((e.clientX - r.left) / r.width) * 100);
+    });
+    host._setBA = set;
+    return host;
+  }
+
+  /* Lazy */
+  var lazyIO = ('IntersectionObserver' in window) ? new IntersectionObserver(function (es) {
+    es.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      var img = en.target;
+      if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+      img.addEventListener('load', function () { img.classList.add('is-loaded'); }, { once: true });
+      img.addEventListener('error', function () { img.classList.add('is-loaded'); }, { once: true });
+      lazyIO.unobserve(img);
+    });
+  }, { rootMargin: '250px 0px' }) : null;
+  function observeLazy(scope) {
+    $$('img[data-src]', scope || document).forEach(function (img) {
+      if (lazyIO) lazyIO.observe(img);
+      else { img.src = img.dataset.src; img.classList.add('is-loaded'); }
+    });
+  }
+
+  /* Galerie */
+  var grid = $('#gallery-grid'), filtersEl = $('#gallery-filters'), currentCat = 'tous';
+  function renderFilters() {
+    filtersEl.innerHTML = '';
+    CATEGORIES.forEach(function (c) {
+      var n = c.id === 'tous' ? ITEMS.length : ITEMS.filter(function (i) { return i.cat === c.id; }).length;
+      var b = document.createElement('button');
+      b.type = 'button'; b.dataset.cat = c.id; b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', String(c.id === currentCat));
+      b.className = 'filter-btn shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition ' +
+        (c.id === currentCat ? 'border-ink bg-ink text-ivory' : 'border-line bg-white text-body hover:border-ink/50');
+      b.textContent = c.label + ' (' + n + ')';
+      b.addEventListener('click', function () { setCategory(c.id); });
+      filtersEl.appendChild(b);
+    });
+  }
+  function setCategory(id) {
+    currentCat = id;
+    $$('.filter-btn', filtersEl).forEach(function (b) {
+      var on = b.dataset.cat === id;
+      b.setAttribute('aria-selected', String(on));
+      b.className = 'filter-btn shrink-0 rounded-full border px-4 py-2 text-[13px] font-medium transition ' +
+        (on ? 'border-ink bg-ink text-ivory' : 'border-line bg-white text-body hover:border-ink/50');
+    });
+    var visible = 0;
+    $$('.gallery-card', grid).forEach(function (card) {
+      var show = id === 'tous' || card.dataset.cat === id;
+      card.classList.toggle('hidden', !show);
+      if (show && card._setBA) card._setBA(50);
+      if (show) visible++;
+    });
+    $('#gallery-count').textContent = visible + ' démonstration' + (visible > 1 ? 's' : '');
+    $('#gallery-empty').classList.toggle('hidden', visible !== 0);
+  }
+  function renderGallery() {
+    grid.innerHTML = '';
+    ITEMS.forEach(function (item) {
+      var card = document.createElement('article');
+      card.className = 'gallery-card border border-line bg-ivory p-2';
+      card.dataset.cat = item.cat;
+      var ba = document.createElement('div');
+      ba.className = 'ba aspect-square';
+      buildBA(ba, item.before, item.after, { lazy: true });
+      var meta = document.createElement('div');
+      meta.className = 'flex items-baseline justify-between gap-3 px-1.5 pt-3 pb-1.5';
+      meta.innerHTML = '<h3 class="text-sm font-semibold">' + item.title + '</h3>' +
+        '<span class="text-[11px] text-body/70">' + CATEGORIES.filter(function (c) { return c.id === item.cat; })[0].label + '</span>';
+      card.appendChild(ba); card.appendChild(meta);
+      card._setBA = ba._setBA;
+      grid.appendChild(card);
+    });
+    observeLazy(grid);
+    setCategory('tous');
+  }
+  buildBA($('#hero-ba'), 'images/before-sneaker.jpg', 'images/after-sneaker.jpg', {});
+
+  /* Dropzone */
+  var dz = $('#dropzone'), dzInput = $('#dz-input');
+  var dzIdle = $('#dz-idle'), dzScan = $('#dz-scan'), dzResult = $('#dz-result');
+  var timers = [];
+  function showDZ(s) {
+    dzIdle.classList.toggle('hidden', s !== 'idle');
+    dzScan.classList.toggle('hidden', s !== 'scan'); dzScan.classList.toggle('flex', s === 'scan');
+    dzResult.classList.toggle('hidden', s !== 'result');
+  }
+  function handleFile(file) {
+    if (!file) return;
+    if (!/^image\//.test(file.type)) { toast('Format non pris en charge', 'Déposez une image (JPG, PNG, HEIC).', 'error'); return; }
+    if (file.size > 25 * 1024 * 1024) { toast('Fichier trop volumineux', '25 Mo maximum.', 'warn'); return; }
+    var url = URL.createObjectURL(file);
+    $('#dz-scan-img').src = url;
+    showDZ('scan');
+    $('#dz-scan-bar').style.width = '8%';
+    $('#dz-scan-text').textContent = 'Analyse de la lumière...';
+    icons();
+    timers.forEach(clearTimeout); timers = [];
+    timers.push(setTimeout(function () { $('#dz-scan-bar').style.width = '50%'; $('#dz-scan-text').textContent = 'Étalonnage studio...'; }, 800));
+    timers.push(setTimeout(function () { $('#dz-scan-bar').style.width = '100%'; $('#dz-scan-text').textContent = 'Métamorphose studio prête !'; }, 1600));
+    timers.push(setTimeout(function () {
+      buildBA($('#dz-ba'), url, url, {});
+      var before = $('.ba-before', $('#dz-ba'));
+      if (before) before.classList.add('raw-look');
+      var ov = document.createElement('div'); ov.className = 'raw-overlay';
+      $('#dz-ba').insertBefore(ov, $('.ba-after', $('#dz-ba')));
+      $('#dz-ba')._setBA(50);
+      showDZ('result');
+      toast('Métamorphose studio prête !', 'Prévisualisation locale — commandez pour le rendu final.', 'success');
+    }, 2000));
+  }
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    dz.addEventListener(ev, function (e) { e.preventDefault(); dz.classList.add('border-ink'); });
+  });
+  ['dragleave', 'dragend'].forEach(function (ev) {
+    dz.addEventListener(ev, function (e) { e.preventDefault(); if (!dz.contains(e.relatedTarget)) dz.classList.remove('border-ink'); });
+  });
+  dz.addEventListener('drop', function (e) {
+    e.preventDefault(); dz.classList.remove('border-ink');
+    handleFile(e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]);
+  });
+  $('#dz-browse').addEventListener('click', function (e) { e.stopPropagation(); dzInput.click(); });
+  dz.addEventListener('click', function (e) {
+    if (dzIdle.classList.contains('hidden')) return;
+    if (e.target.closest('#dz-browse')) return;
+    dzInput.click();
+  });
+  dz.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dzInput.click(); } });
+  dzInput.addEventListener('change', function () { handleFile(dzInput.files[0]); dzInput.value = ''; });
+  $('#dz-reset').addEventListener('click', function () { timers.forEach(clearTimeout); showDZ('idle'); });
+
+  /* Avis */
+  var TESTIMONIALS = [
+    { quote: "Nos sneakers ont enfin l'air de valoir leur prix. +34 % de clics sur nos pubs dès la première semaine.", name: 'Camille Ferrand', role: 'Responsable e-commerce, Atelier Rive', initials: 'CF' },
+    { quote: "Photos déposées le lundi soir, visuels studio reçus le mercredi matin. Zéro colis envoyé.", name: 'Yanis Belkacem', role: 'Fondateur, Nova Audio', initials: 'YB' },
+    { quote: "Le NDA a été signé avant même l'envoi des photos de notre collection capsule. Sérieux irréprochable.", name: 'Thomas Nguyen', role: 'Chef de produit, Chronos 1912', initials: 'TN' }
+  ];
+  (function () {
+    var g = $('#testimonial-grid');
+    TESTIMONIALS.forEach(function (t) {
+      var el = document.createElement('figure');
+      el.className = 'border border-line bg-ivory p-6';
+      el.innerHTML =
+        '<p class="font-display text-4xl leading-none text-bronze" aria-hidden="true">“</p>' +
+        '<blockquote class="mt-2 font-display italic text-[17px] leading-relaxed text-ink">' + t.quote + '</blockquote>' +
+        '<figcaption class="mt-5 flex items-center gap-3 border-t border-line pt-4">' +
+          '<span class="grid h-9 w-9 place-items-center rounded-full bg-ink text-[11px] font-semibold text-ivory">' + t.initials + '</span>' +
+          '<span><span class="block text-[13px] font-semibold">' + t.name + '</span>' +
+          '<span class="block text-xs text-body">★ 5/5 · ' + t.role + '</span></span>' +
+        '</figcaption>';
+      g.appendChild(el);
+    });
+  })();
+
+  /* Calculateur */
+  var PACKS = { express: { name: 'Pack Express', price: 50, orig: 120 }, premium: { name: 'Pack Premium', price: 120, orig: 240 } };
+  var OPT_LABELS = { prio: 'Traitement prioritaire 24 h', photos: '+5 photos HD', sources: 'Sources HD & PNG transparent' };
+  function selectedPack() { var el = $('.pack-radio:checked'); return el ? el.value : 'express'; }
+  function computeTotal() {
+    var pack = PACKS[selectedPack()];
+    var opts = $$('.opt-input:checked').map(function (i) { return { id: i.dataset.opt, price: +i.dataset.price }; });
+    var o = opts.reduce(function (s, x) { return s + x.price; }, 0);
+    return { pack: pack, opts: opts, optTotal: o, total: pack.price + o, orig: pack.orig + o };
+  }
+  function syncCalculator() {
+    var c = computeTotal();
+    $('#calc-pack-label').textContent = c.pack.name;
+    $('#calc-pack-price').textContent = euro(c.pack.price);
+    $('#calc-options-price').textContent = euro(c.optTotal);
+    $('#calc-savings').textContent = '-' + euro(c.orig - c.total);
+    $('#calc-total').textContent = euro(c.total);
+    $('#calc-total-orig').textContent = euro(c.orig);
+    $('#calc-cta-price').textContent = euro(c.total);
+    $('#calc-cta').dataset.pack = selectedPack();
+    syncModalSummary();
+  }
+  $$('.pack-radio').forEach(function (r) { r.addEventListener('change', syncCalculator); });
+  $$('.opt-input').forEach(function (c) { c.addEventListener('change', syncCalculator); });
+
+  /* FAQ */
+  var FAQ = [
+    { q: "Comment travailler sans recevoir le produit ?", a: "Tout est numérique : vous envoyez vos photos smartphone, nous reconstruisons lumière, matières et décor en haute définition. Aucun envoi matériel, aucun risque de casse." },
+    { q: "Quels sont les délais ?", a: "24 à 48 h ouvrées pour le Pack Express, 48 à 72 h pour le Premium. L'option prioritaire garantit un départ sous 24 h." },
+    { q: "Qui possède les droits sur les visuels ?", a: "Vous. Le Pack Premium cède les droits commerciaux complets (pub, print, e-commerce, sans limite). Le Pack Express inclut web et réseaux sociaux." },
+    { q: "Combien de retouches sont incluses ?", a: "Une retouche offerte sous 24 h avec Express, deux avec Premium. Au-delà : 15 € par retouche." },
+    { q: "Mes produits non sortis restent-ils confidentiels ?", a: "Oui : NDA signé avant tout échange, transferts chiffrés, suppression automatique des fichiers sous 30 jours." },
+    { q: "Quels formats sont livrés ?", a: "JPEG/PNG 6000 px (300 dpi), clips MP4 4K, formats 1:1, 9:16 et 4:5 pour la pub. L'option Sources ajoute les détourages PNG transparents." }
+  ];
+  var faqList = $('#faq-list'), faqSearch = $('#faq-search');
+  function esc(s) { return s.replace(/[&<>"]/g, function (m) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[m]; }); }
+  function hl(text, q) {
+    var safe = esc(text);
+    if (!q) return safe;
+    return safe.replace(new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi'), '<mark class="hl">$1</mark>');
+  }
+  function renderFAQ(query) {
+    var q = (query || '').trim().toLowerCase();
+    faqList.innerHTML = '';
+    var shown = 0;
+    FAQ.forEach(function (item, i) {
+      if (q && item.q.toLowerCase().indexOf(q) === -1 && item.a.toLowerCase().indexOf(q) === -1) return;
+      shown++;
+      var w = document.createElement('div');
+      w.className = 'acc-item';
+      w.innerHTML =
+        '<h3><button type="button" class="acc-trigger flex w-full items-center justify-between gap-4 py-4 text-left" aria-expanded="false" aria-controls="acc-' + i + '">' +
+        '<span class="acc-q text-sm font-semibold">' + hl(item.q, q) + '</span>' +
+        '<i data-lucide="chevron-down" class="acc-chev h-4 w-4 shrink-0 text-body/50 transition-transform"></i></button></h3>' +
+        '<div class="acc-body" id="acc-' + i + '"><div><p class="acc-a pb-4 text-sm text-body leading-relaxed">' + hl(item.a, q) + '</p></div></div>';
+      faqList.appendChild(w);
+    });
+    $$('.acc-trigger', faqList).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var item = btn.closest('.acc-item');
+        var open = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+      });
+    });
+    icons();
+    $('#faq-clear').classList.toggle('hidden', !q);
+    $('#faq-meta').textContent = q ? shown + ' résultat' + (shown > 1 ? 's' : '') : FAQ.length + ' questions';
+    $('#faq-empty').classList.toggle('hidden', shown !== 0);
+  }
+  faqSearch.addEventListener('input', function () { renderFAQ(faqSearch.value); });
+  $('#faq-clear').addEventListener('click', function () { faqSearch.value = ''; renderFAQ(''); faqSearch.focus(); });
+
+  /* Modale */
+  var modal = $('#order-modal'), form = $('#order-form'), step = 1, lastFocus = null;
+  function setStep(n) {
+    step = n;
+    $$('.modal-step', form).forEach(function (p) { p.classList.toggle('hidden', p.dataset.panel !== String(n)); });
+    var done = n === 'done';
+    $('#modal-nav').classList.toggle('hidden', done);
+    $('#modal-steps-bar').classList.toggle('hidden', done);
+    $('#modal-progress').style.width = done ? '100%' : (n / 3 * 100).toFixed(2) + '%';
+    $('#modal-step-label').textContent = 'Étape ' + n + ' sur 3';
+    $('#btn-back').disabled = n === 1;
+    $('#btn-next').innerHTML = n === 3 ? 'Valider ma demande' : 'Continuer <i data-lucide="arrow-right" class="h-4 w-4"></i>';
+    $$('.step-dot').forEach(function (d) {
+      var s = +d.dataset.step;
+      d.className = 'step-dot grid h-6 w-6 place-items-center rounded-full text-[11px] font-semibold ' +
+        (s < n ? 'bg-ink text-ivory border border-ink' : s === n ? 'border-ink text-ink' : 'border-ink/30 text-body/60');
+      d.innerHTML = s < n ? '<i data-lucide="check" class="h-3 w-3"></i>' : String(s);
+    });
+    $$('.step-line').forEach(function (l) { l.className = 'step-line h-px flex-1 ' + (+l.dataset.line < n ? 'bg-ink' : 'bg-line'); });
+    if (n === 2) syncModalSummary();
+    if (n === 3) fillRecap();
+    icons();
+  }
+  function fieldErr(input, msg) {
+    input.classList.add('field-invalid');
+    var e = $('.err', input.closest('div'));
+    if (e) { e.textContent = msg; e.classList.remove('hidden'); }
+  }
+  function clearErr(input) {
+    input.classList.remove('field-invalid');
+    var e = $('.err', input.closest('div'));
+    if (e) { e.textContent = ''; e.classList.add('hidden'); }
+  }
+  function valid1() {
+    var ok = true;
+    [$('#f-brand'), $('#f-sector')].forEach(clearErr);
+    if ($('#f-brand').value.trim().length < 2) { fieldErr($('#f-brand'), 'Indiquez le nom de votre marque.'); ok = false; }
+    if (!$('#f-sector').value) { fieldErr($('#f-sector'), 'Sélectionnez votre secteur.'); ok = false; }
+    if (!ok) toast('Champs manquants', 'Complétez les informations du projet.', 'error');
+    return ok;
+  }
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+  function valid3() {
+    var ok = true;
+    clearErr($('#f-email'));
+    $('#consent-err').classList.add('hidden');
+    if (!EMAIL_RE.test($('#f-email').value.trim())) { fieldErr($('#f-email'), 'E-mail invalide (ex. contact@mamarque.com).'); ok = false; }
+    if (!$('#f-consent').checked) { $('#consent-err').classList.remove('hidden'); ok = false; }
+    if (!ok) toast('Validation impossible', 'Corrigez l\u2019e-mail et acceptez les conditions.', 'error');
+    return ok;
+  }
+  function modalPack() { var el = $('input[name="modal-pack"]:checked'); return el ? el.value : 'express'; }
+  function modalOpts() { return $$('.modal-opt:checked').map(function (i) { return { id: i.dataset.opt, price: +i.dataset.price }; }); }
+  function modalTotal() {
+    var p = PACKS[modalPack()], o = modalOpts();
+    var oo = o.reduce(function (s, x) { return s + x.price; }, 0);
+    return { pack: p, opts: o, optTotal: oo, total: p.price + oo };
+  }
+  function syncModalSummary() {
+    var t = modalTotal();
+    $('#m-pack').textContent = t.pack.name + ' — ' + euro(t.pack.price);
+    $('#m-opts').textContent = euro(t.optTotal);
+    $('#m-total').textContent = euro(t.total);
+  }
+  function fillRecap() {
+    var t = modalTotal();
+    $('#r-brand').textContent = $('#f-brand').value.trim() || '—';
+    $('#r-sector').textContent = $('#f-sector').value || '—';
+    $('#r-pack').textContent = t.pack.name + (t.opts.length ? ' + ' + t.opts.map(function (o) { return OPT_LABELS[o.id]; }).join(', ') : '');
+    $('#r-total').textContent = euro(t.total) + ($('#opt-nda').checked ? ' · NDA' : '');
+    syncModalSummary();
+  }
+  function openModal(pack) {
+    lastFocus = document.activeElement;
+    modal.classList.remove('hidden');
+    requestAnimationFrame(function () { modal.classList.remove('modal-closed'); });
+    document.body.classList.add('no-scroll');
+    if (pack && PACKS[pack]) {
+      var r = $('input[name="modal-pack"][value="' + pack + '"]'); if (r) r.checked = true;
+      var s = $('.pack-radio[value="' + pack + '"]'); if (s) s.checked = true;
+      var ch = window._channel || 'instagram';
+      var cr = $('input[name="channel"][value="' + ch + '"]'); if (cr) cr.checked = true;
+      updateHandleLabel(ch);
+    }
+    syncCalculator();
+    setStep(1);
+  }
+  function closeModal() {
+    modal.classList.add('modal-closed');
+    document.body.classList.remove('no-scroll');
+    setTimeout(function () { modal.classList.add('hidden'); if (lastFocus) lastFocus.focus(); }, 280);
+  }
+  $$('[data-open-order]').forEach(function (b) { b.addEventListener('click', function () { openModal(b.dataset.pack); }); });
+  $('#modal-close').addEventListener('click', closeModal);
+  $('#modal-backdrop').addEventListener('click', closeModal);
+  $$('[data-close-modal]').forEach(function (b) { b.addEventListener('click', closeModal); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal(); });
+  $('#btn-back').addEventListener('click', function () { if (step > 1) setStep(step - 1); });
+  $('#btn-next').addEventListener('click', function () {
+    if (step === 1) { if (valid1()) setStep(2); }
+    else if (step === 2) setStep(3);
+    else if (step === 3) {
+      if (!valid3()) return;
+      var ref = 'LUM-' + Math.floor(1000 + Math.random() * 9000);
+      $('#done-ref').textContent = ref;
+      var t = modalTotal();
+      var chan = ($('input[name="channel"]:checked') || {}).value || 'instagram';
+      $('#done-summary').textContent =
+        'LUMINA AGENCY — DEMANDE ' + ref + '\n' +
+        'Marque : ' + $('#f-brand').value.trim() + '\n' +
+        'Secteur : ' + $('#f-sector').value + '\n' +
+        'Pack : ' + t.pack.name + ' (' + euro(t.pack.price) + ')\n' +
+        'Options : ' + (t.opts.length ? t.opts.map(function (o) { return OPT_LABELS[o.id] + ' (+' + o.price + ' €)'; }).join(' / ') : 'aucune') + '\n' +
+        'NDA : ' + ($('#opt-nda').checked ? 'oui' : 'non') + '\n' +
+        'Canal : ' + (chan === 'instagram' ? 'Instagram DM' : chan === 'tiktok' ? 'TikTok DM' : 'E-mail / Drive') + '\n' +
+        'E-mail : ' + $('#f-email').value.trim() + '\n' +
+        'Handle : ' + ($('#f-handle').value.trim() || '—') + '\n' +
+        'TOTAL : ' + euro(t.total);
+      $('#done-mailto').href = 'mailto:lumina.product@gmail.com?subject=' +
+        encodeURIComponent('Commande ' + ref + ' — ' + $('#f-brand').value.trim()) +
+        '&body=' + encodeURIComponent($('#done-summary').textContent);
+      setStep('done');
+      toast('Demande enregistrée', 'Réf. ' + ref + ' — envoyez le récapitulatif par e-mail.', 'success');
+    }
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); $('#btn-next').click(); });
+  $$('input[name="modal-pack"]').forEach(function (r) { r.addEventListener('change', syncModalSummary); });
+  $$('.modal-opt').forEach(function (c) { c.addEventListener('change', syncModalSummary); });
+  $('#f-brand').addEventListener('input', function () { clearErr($('#f-brand')); });
+  $('#f-sector').addEventListener('change', function () { clearErr($('#f-sector')); });
+  $('#f-email').addEventListener('input', function () { clearErr($('#f-email')); });
+
+  /* Canaux */
+  function updateHandleLabel(ch) {
+    $('#handle-label').textContent = ch === 'tiktok' ? 'Handle TikTok' : (ch === 'email' ? 'Identifiant' : 'Handle Instagram');
+    $('#f-handle').placeholder = ch === 'email' ? 'contact@mamarque.com' : '@mamarque';
+  }
+  $$('.channel-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var ch = btn.dataset.channel;
+      window._channel = ch;
+      $$('.channel-btn').forEach(function (b) {
+        var on = b === btn;
+        b.setAttribute('aria-checked', String(on));
+        b.className = 'channel-btn rounded-full px-3.5 py-1.5 text-xs font-semibold transition ' +
+          (on ? 'bg-ink text-ivory' : 'text-body hover:text-ink');
+      });
+      var r = $('input[name="channel"][value="' + ch + '"]'); if (r) r.checked = true;
+      updateHandleLabel(ch);
+    });
+  });
+  $$('input[name="channel"]').forEach(function (r) { r.addEventListener('change', function () { updateHandleLabel(r.value); }); });
+
+  /* Menu + reveal */
+  var menu = $('#mobile-menu'), toggle = $('#menu-toggle');
+  toggle.addEventListener('click', function () {
+    var open = menu.classList.toggle('hidden');
+    toggle.setAttribute('aria-expanded', String(!open));
+  });
+  $$('.mobile-link').forEach(function (a) { a.addEventListener('click', function () { menu.classList.add('hidden'); }); });
+
+  var revealIO = null;
+  function watchReveals(scope) {
+    $$('.reveal', scope || document).forEach(function (el) {
+      if (el.classList.contains('is-visible')) return;
+      if (revealIO) revealIO.observe(el); else el.classList.add('is-visible');
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    revealIO = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('is-visible'); revealIO.unobserve(en.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    watchReveals(document);
+  } else watchReveals(document);
+
+  /* Init */
+  $('#year').textContent = String(new Date().getFullYear());
+  renderFilters();
+  renderGallery();
+  renderFAQ('');
+  syncCalculator();
+  icons();
+  window.addEventListener('load', icons);
+
+  window.LuminaTest = {
+    setCategory: setCategory, computeTotal: computeTotal, modalTotal: modalTotal,
+    openModal: openModal, closeModal: closeModal, setStep: setStep, handleFile: handleFile,
+    state: function () {
+      return {
+        step: step,
+        category: currentCat,
+        visibleCards: $$('.gallery-card', grid).filter(function (c) { return !c.classList.contains('hidden'); }).length,
+        faqVisible: $$('.acc-item', faqList).length,
+        total: computeTotal().total
+      };
+    }
+  };
+})();
+</script>
+</body>
+</html>
